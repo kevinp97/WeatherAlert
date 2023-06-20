@@ -37,7 +37,7 @@ class Scraping():
         return self.data['forecastday'][0]['hour'][ind]['temp_c']
         
     def condition(self, ind):
-        return self.data['forecastday'][0]['hour'][ind]['condition'][0]['text']
+        return self.data['forecastday'][0]['hour'][ind]['condition']['text']
         
     def wind(self, ind):
         return self.data['forecastday'][0]['hour'][ind]['wind_kph']
@@ -51,19 +51,31 @@ class Scraping():
     def prob_rain(self, ind):
         return self.data['forecastday'][0]['hour'][ind]['chance_of_rain']
       
+def organizador_datos(datos, i):
+    date = datos.date(i)
+    hour = datos.hour(i)
+    temp = datos.temp(i)
+    condition = datos.condition(i)
+    wind = datos.wind(i)
+    sensation = datos.sensation(i)
+    rain = datos.rain(i)
+    prob_rain = datos.prob_rain(i)
+        
+    return [date, hour, temp, condition, wind, sensation, rain, prob_rain]
+
+def creador_dataframe(datos):
+    data = []
+    for i in tqdm(range(0,24)):
+        data.append(organizador_datos(datos,i))
+        
+    dataframe = pd.DataFrame(data, columns=["Fecha", "Hora", "Temperatura", "Condicion", "Viento","Sensacion", "Lluvia", "Probabilidad_Lluvia"])
+    dataframe["Fecha"] = pd.to_datetime(dataframe["Fecha"])
+    return dataframe
+        
+    
         
 if __name__ == "__main__":
-    # response = requests.get(weather_url).json()
-    # #Comprobamos que esta la clave forecast
-    # logging.info(response.keys())
-    # weather_data = response["forecast"]
-    # with open('WeatherData.json', 'w') as jf: 
-    #     json.dump(weather_data, jf, ensure_ascii=False, indent=4)
-        
-    # logging.warning(weather_data['forecastday'][0]['hour'][23]['time'])
-        
-    #Obtenemos la fecha
     datos = Scraping(response)
-    for i in range(24):
-        fecha = datos.hour(i)
-        logging.info(fecha)
+    dataframe = creador_dataframe(datos)
+    logging.info(dataframe)    
+    
