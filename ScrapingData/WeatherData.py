@@ -11,7 +11,7 @@ import json
 import pandas as pd
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-from datetime import datetime
+from datetime import datetime, time
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -70,12 +70,30 @@ def creador_dataframe(datos):
         
     dataframe = pd.DataFrame(data, columns=["Fecha", "Hora", "Temperatura", "Condicion", "Viento","Sensacion", "Lluvia", "Probabilidad_Lluvia"])
     dataframe["Fecha"] = pd.to_datetime(dataframe["Fecha"])
+    dataframe["Hora"] = pd.to_datetime(dataframe['Hora'], format='%H:%M').dt.time
     return dataframe
         
+    
+def temp_max_min_and_rain(dataframe):
+    temp_max = dataframe['Temperatura'].max()
+    hora_temp_max = dataframe[dataframe['Temperatura'] == dataframe['Temperatura'].max()]['Hora']
+    lluvia = dataframe[(dataframe['Lluvia'] == 1) & (dataframe['Hora'] >= time(8,0)) & (dataframe['Hora'] <= time(21,0))]
+    hora_lluvia = dataframe[(dataframe['Lluvia'] == 1) & (dataframe['Hora'] >= time(8,0)) & (dataframe['Hora'] <= time(21,0))]['Hora']
+    prob_lluivia = dataframe[(dataframe['Hora'] >= time(8,0)) & (dataframe['Hora'] <= time(21,0))]['Probabilidad_Lluvia']
     
         
 if __name__ == "__main__":
     datos = Scraping(response)
     dataframe = creador_dataframe(datos)
-    logging.info(dataframe)    
+    logging.warning(dataframe.dtypes)
+    logging.info()
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
