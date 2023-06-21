@@ -1,5 +1,3 @@
-import os
-from twilio.rest import Client
 import sys
 sys.path.append("..")  # Agrega el directorio anterior al PATH
 from TwilioConfig import PHONE_NUMBER, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, API_KEY_WAPI, COORDINATE
