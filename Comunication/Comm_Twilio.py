@@ -13,6 +13,7 @@ phone_number_to = PHONE_NUMBER_TO
 client = Client(account_sid, auth_token)
 
 
+
 if __name__ == "__main__":
 
     message = client.messages.create(
